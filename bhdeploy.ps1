@@ -1,5 +1,5 @@
-'PSCloudScript for Autopilot Requirements'
-'iex (irm autopilot.ps1.osdeploy.com)'
+'PSCloudScript for OOBEDeploy BH'
+'iex (irm oobedeploybh.ps1.osdeploy.com)'
 
 #=================================================
 #   Block WinPE
@@ -11,7 +11,7 @@ if ($env:SystemDrive -eq 'X:')
     exit
 }
 #=================================================
-#   Block OOBE
+#   Require OOBE
 #=================================================
 if ($env:UserName -ne 'defaultuser0')
 {
@@ -64,14 +64,3 @@ if ((Get-Module PackageManagement).version -lt [System.Version]'1.4.7.0')
     Write-Host -ForegroundColor Cyan 'Install PowerShell Module PackageManagement'
     Install-Module PackageManagement -Force
 }
-#=================================================
-#	Get-WindowsAutoPilotInfo
-#=================================================
-Write-Host -ForegroundColor Cyan 'Install PowerShell Script Get-WindowsAutoPilotInfo'
-Install-Script -Name Get-WindowsAutoPilotInfo -Force
-#=================================================
-#	Complete
-#=================================================
-Write-Verbose 'Get-WindowsAutoPilotInfo is ready to run in a new PowerShell window' -Verbose
-Start-Sleep -Seconds 5
-Start-Process PowerShell.exe
