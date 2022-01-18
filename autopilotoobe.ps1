@@ -14,7 +14,7 @@ elseif ($env:UserName -ne 'defaultuser0')
 else
 {
     #=================================================
-    #	Trust PSGallery
+    #	Set-ExecutionPolicy
     #=================================================
     if ((Get-ExecutionPolicy) -ne 'RemoteSigned')
     {
