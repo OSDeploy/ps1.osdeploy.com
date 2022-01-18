@@ -1,11 +1,17 @@
 'PSCloudScript for AutopilotOOBE Requirements'
 'iex (irm autopilotoobe.ps1.osdeploy.com)'
 
+#=================================================
+#   Test WinPE
+#=================================================
 if ($env:SystemDrive -eq 'X:')
 {
     Write-Warning 'This PSCloudScript cannot be run from WinPE'
     Start-Sleep -Seconds 5
 }
+#=================================================
+#   Test OOBE
+#=================================================
 elseif ($env:UserName -ne 'defaultuser0')
 {
     Write-Warning 'This PSCloudScript must be run from OOBE'
@@ -71,7 +77,7 @@ else
     #=================================================
     #	Complete
     #=================================================
-    Write-Verbose 'Start-AutopilotOOBE is ready to run in the new PowerShell window' -Verbose
+    Write-Verbose 'Start-AutopilotOOBE is ready to run in a new PowerShell window' -Verbose
     Start-Sleep -Seconds 5
     Start-Process PowerShell.exe
 }

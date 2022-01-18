@@ -72,7 +72,7 @@ else
     #=================================================
     #	Complete
     #=================================================
-    Write-Verbose 'Get-WindowsAutoPilotInfo is ready to run in the new PowerShell window' -Verbose
+    Write-Verbose 'Get-WindowsAutoPilotInfo is ready to run in a new PowerShell window' -Verbose
     Start-Sleep -Seconds 5
     Start-Process PowerShell.exe
 }
