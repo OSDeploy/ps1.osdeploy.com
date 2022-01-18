@@ -42,7 +42,8 @@ else
     #=================================================
     #	NuGet
     #=================================================
-    if (-not (Get-PackageProvider | Where-Object {$_.Name -eq 'NuGet'}))
+    $PackageProvider = Get-PackageProvider
+    if (-not ($PackageProvider | Where-Object {$_.Name -eq 'NuGet'}))
     {
         Write-Host -ForegroundColor Cyan 'Install PackageProvider NuGet'
         Install-PackageProvider -Name NuGet -Force
