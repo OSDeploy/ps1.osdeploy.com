@@ -28,6 +28,15 @@ else
         Set-ExecutionPolicy RemoteSigned -Force
     }
     #=================================================
+    #	NuGet
+    #=================================================
+    $PackageProvider = Get-PackageProvider
+    if (-not ($PackageProvider | Where-Object {$_.Name -eq 'NuGet'}))
+    {
+        Write-Host -ForegroundColor Cyan 'Install PackageProvider NuGet'
+        Install-PackageProvider -Name NuGet -Force
+    }
+    #=================================================
     #	Trust PSGallery
     #=================================================
     $PSRepository = Get-PSRepository -Name PSGallery
@@ -38,15 +47,6 @@ else
             Write-Host -ForegroundColor Cyan 'Trust PSGallery'
             Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
         }
-    }
-    #=================================================
-    #	NuGet
-    #=================================================
-    $PackageProvider = Get-PackageProvider
-    if (-not ($PackageProvider | Where-Object {$_.Name -eq 'NuGet'}))
-    {
-        Write-Host -ForegroundColor Cyan 'Install PackageProvider NuGet'
-        Install-PackageProvider -Name NuGet -Force
     }
     #=================================================
     #	PowerShellGet
