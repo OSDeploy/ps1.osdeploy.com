@@ -6,16 +6,16 @@
 #=================================================
 if ($env:SystemDrive -eq 'X:')
 {
-    Write-Warning 'This PSCloudScript cannot be run from WinPE'
+    Write-Warning 'PSCloudScript cannot be run from WinPE'
     Start-Sleep -Seconds 5
     exit
 }
 #=================================================
-#   Block OOBE
+#   Require OOBE
 #=================================================
 if ($env:UserName -ne 'defaultuser0')
 {
-    Write-Warning 'This PSCloudScript must be run from OOBE'
+    Write-Warning 'PSCloudScript must be run from OOBE'
     Start-Sleep -Seconds 5
     exit
 }
@@ -24,17 +24,17 @@ if ($env:UserName -ne 'defaultuser0')
 #=================================================
 if ((Get-ExecutionPolicy) -ne 'RemoteSigned')
 {
-    Write-Host -ForegroundColor Cyan 'Set PowerShell ExecutionPolicy to RemoteSigned'
+    Write-Host -ForegroundColor Cyan 'Set-ExecutionPolicy RemoteSigned'
     Set-ExecutionPolicy RemoteSigned -Force
 }
 #=================================================
 #	NuGet
 #=================================================
-$PackageProvider = Get-PackageProvider
-if (-not ($PackageProvider | Where-Object {$_.Name -eq 'NuGet'}))
+$PackageProvider = Get-PackageProvider -Name NuGet -ErrorAction Ignore
+if (-not ($PackageProvider))
 {
-    Write-Host -ForegroundColor Cyan 'Install PackageProvider NuGet'
-    Install-PackageProvider -Name NuGet -Force
+    Write-Host -ForegroundColor Cyan 'Install-PackageProvider NuGet'
+    Install-PackageProvider -Name NuGet -ForceBootstrap -IncludeDependencies
 }
 #=================================================
 #	Trust PSGallery
@@ -65,13 +65,31 @@ if ((Get-Module PackageManagement).version -lt [System.Version]'1.4.7.0')
     Install-Module PackageManagement -Force
 }
 #=================================================
+#	WindowsAutopilotIntune
+#=================================================
+$Module = Import-Module WindowsAutopilotIntune -PassThru -ErrorAction Ignore
+if (-not $Module)
+{
+    Write-Host -ForegroundColor Cyan 'Install PowerShell Module WindowsAutopilotIntune'
+    Install-Module WindowsAutopilotIntune -Force
+}
+#=================================================
+#	AzureAD
+#=================================================
+$Module = Import-Module AzureAD -PassThru -ErrorAction Ignore
+if (-not $Module)
+{
+    Write-Host -ForegroundColor Cyan 'Install PowerShell Module AzureAD'
+    Install-Module AzureAD -Force
+}
+#=================================================
 #	Get-WindowsAutoPilotInfo
 #=================================================
 Write-Host -ForegroundColor Cyan 'Install PowerShell Script Get-WindowsAutoPilotInfo'
-Install-Script -Name Get-WindowsAutoPilotInfo -Force
+#Install-Script -Name Get-WindowsAutoPilotInfo -Force
 #=================================================
 #	Complete
 #=================================================
 Write-Verbose 'Get-WindowsAutoPilotInfo is ready to run in a new PowerShell window' -Verbose
 Start-Sleep -Seconds 5
-Start-Process PowerShell.exe
+#Start-Process PowerShell.exe

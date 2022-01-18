@@ -6,7 +6,7 @@
 #=================================================
 if ($env:SystemDrive -eq 'X:')
 {
-    Write-Warning 'This PSCloudScript cannot be run from WinPE'
+    Write-Warning 'PSCloudScript cannot be run from WinPE'
     Start-Sleep -Seconds 5
     exit
 }
@@ -15,7 +15,7 @@ if ($env:SystemDrive -eq 'X:')
 #=================================================
 if ($env:UserName -ne 'defaultuser0')
 {
-    Write-Warning 'This PSCloudScript must be run from OOBE'
+    Write-Warning 'PSCloudScript must be run from OOBE'
     Start-Sleep -Seconds 5
     exit
 }
