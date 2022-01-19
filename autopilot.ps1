@@ -5,10 +5,8 @@
     A detailed description of the function or script. This keyword can be
     used only once in each topic.
 .NOTES
-    Author          : David Segura
-    Operating System: Windows 10 1809+ - Windows 11
-    Environment     : OOBE (Out-of-Box Experience)
-                    : Press Shift + F10 to open a Command Prompt
+    Requires Windows 10 1809+ - Windows 11
+    In OOBE (Out-of-Box Experience), press Shift + F10 to open a Command Prompt
 .LINK
     autopilot.ps1.osdeploy.com
 .EXAMPLE
@@ -37,20 +35,20 @@ if ($env:UserName -ne 'defaultuser0')
 #=================================================
 if ((Get-ExecutionPolicy) -ne 'RemoteSigned')
 {
-    Write-Host -ForegroundColor Cyan 'Set-ExecutionPolicy RemoteSigned'
+    Write-Host -ForegroundColor Green 'Set-ExecutionPolicy RemoteSigned'
     Set-ExecutionPolicy RemoteSigned -Force
 }
 #=================================================
 #	PackageManagement,PowerShellGet
 #=================================================
 if (Get-Module -Name PowerShellGet -ListAvailable | Where-Object {$_.Version -ge '2.2.5'}) {
-    Write-Host -ForegroundColor Cyan 'PowerShellGet 2.2.5 or greater is installed'
+    Write-Host -ForegroundColor Green 'PowerShellGet 2.2.5 or greater is installed'
 }
 else {
-    Write-Host -ForegroundColor Cyan 'Install-Package PackageManagement,PowerShellGet'
+    Write-Host -ForegroundColor Green 'Install-Package PackageManagement,PowerShellGet'
     Install-Package -Name PowerShellGet -MinimumVersion 2.2.5 -Force -Confirm:$false -Source PSGallery
 
-    Write-Host -ForegroundColor Cyan 'Import-Module PackageManagement,PowerShellGet'
+    Write-Host -ForegroundColor Green 'Import-Module PackageManagement,PowerShellGet'
     Import-Module PackageManagement,PowerShellGet -Force
 }
 #=================================================
@@ -61,7 +59,7 @@ if ($PSRepository)
 {
     if ($PSRepository.InstallationPolicy -ne 'Trusted')
     {
-        Write-Host -ForegroundColor Cyan 'Set-PSRepository PSGallery Trusted'
+        Write-Host -ForegroundColor Green 'Set-PSRepository PSGallery Trusted'
         Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
     }
 }
@@ -71,7 +69,7 @@ if ($PSRepository)
 $Requirement = Import-Module WindowsAutopilotIntune -PassThru -ErrorAction Ignore
 if (-not $Requirement)
 {
-    Write-Host -ForegroundColor Cyan 'Install-Module AzureAD,Microsoft.Graph.Intune,WindowsAutopilotIntune'
+    Write-Host -ForegroundColor Green 'Install-Module AzureAD,Microsoft.Graph.Intune,WindowsAutopilotIntune'
     Install-Module WindowsAutopilotIntune -Force
 }
 #=================================================
@@ -80,7 +78,7 @@ if (-not $Requirement)
 $Requirement = Import-Module AzureAD -PassThru -ErrorAction Ignore
 if (-not $Requirement)
 {
-    Write-Host -ForegroundColor Cyan 'Install-Module AzureAD'
+    Write-Host -ForegroundColor Green 'Install-Module AzureAD'
     Install-Module AzureAD -Force -Verbose
 }
 #=================================================
@@ -89,12 +87,13 @@ if (-not $Requirement)
 $Requirement = Get-InstalledScript -Name Get-WindowsAutoPilotInfod -ErrorAction SilentlyContinue
 if (-not $Requirement)
 {
-    Write-Host -ForegroundColor Cyan 'Install-Script Get-WindowsAutoPilotInfo'
+    Write-Host -ForegroundColor Green 'Install-Script Get-WindowsAutoPilotInfo'
     Install-Script -Name Get-WindowsAutoPilotInfo -Force
 }
 #=================================================
 #	Complete
 #=================================================
+Write-Host -ForegroundColor Green 'Complete'
 Write-Verbose 'Starting a new PowerShell process for Get-WindowsAutoPilotInfo' -Verbose
 Start-Sleep -Seconds 3
-Start-Process PowerShell.exe
+Start-Process PowerShell.exe -NoLogo
