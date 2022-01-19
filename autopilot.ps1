@@ -1,5 +1,15 @@
-'PSCloudScript for Autopilot Requirements'
-'iex (irm autopilot.ps1.osdeploy.com)'
+'Autopilot Requirements PSCloudScript'
+'autopilot.ps1.osdeploy.com'
+
+'Requirements:'
+'Windows 10 1809+'
+
+'Environment:'
+'OOBE (Out-of-Box Experience)'
+'Press Shift + F10 to open a Command Prompt'
+
+'Command Line (Command Prompt)'
+'powershell iex(irm autopilot.ps1.osdeploy.com)'
 
 #=================================================
 #   Block WinPE
@@ -79,4 +89,4 @@ Write-Host -ForegroundColor Cyan 'Install PowerShell Script Get-WindowsAutoPilot
 #=================================================
 Write-Verbose 'Get-WindowsAutoPilotInfo is ready to run in a new PowerShell window' -Verbose
 Start-Sleep -Seconds 5
-#Start-Process PowerShell.exe
+Start-Process PowerShell.exe
