@@ -8,7 +8,7 @@
     Requires Windows 10 1809+ - Windows 11
     In OOBE (Out-of-Box Experience), press Shift + F10 to open a Command Prompt
 .LINK
-    autopilot.ps1.osdeploy.com
+    https://github.com/OSDeploy/ps1.osdeploy.com/blob/main/autopilot.ps1
 .EXAMPLE
     powershell iex(irm autopilot.ps1.osdeploy.com)
 #>

@@ -1,16 +1,17 @@
-'AutopilotOOBE Requirements PSCloudScript'
-'autopilotoobe.ps1.osdeploy.com'
-
-'Requirements:'
-'Windows 10 1809+'
-
-'Environment:'
-'OOBE (Out-of-Box Experience)'
-'Press Shift + F10 to open a Command Prompt'
-
-'Command Line (Command Prompt)'
-'powershell iex(irm autopilotoobe.ps1.osdeploy.com)'
-
+<#
+.SYNOPSIS
+    AutopilotOOBE PSCloudScript at autopilotoobe.ps1.osdeploy.com
+.DESCRIPTION
+    A detailed description of the function or script. This keyword can be
+    used only once in each topic.
+.NOTES
+    Requires Windows 10 1809+ - Windows 11
+    In OOBE (Out-of-Box Experience), press Shift + F10 to open a Command Prompt
+.LINK
+    https://github.com/OSDeploy/ps1.osdeploy.com/blob/main/autopilotoobe.ps1
+.EXAMPLE
+    powershell iex(irm autopilotoobe.ps1.osdeploy.com)
+#>
 #=================================================
 #   Block WinPE
 #=================================================
@@ -34,59 +35,70 @@ if ($env:UserName -ne 'defaultuser0')
 #=================================================
 if ((Get-ExecutionPolicy) -ne 'RemoteSigned')
 {
-    Write-Host -ForegroundColor Cyan 'Set PowerShell ExecutionPolicy to RemoteSigned'
+    Write-Host -ForegroundColor Cyan 'Set-ExecutionPolicy RemoteSigned'
     Set-ExecutionPolicy RemoteSigned -Force
 }
 #=================================================
-#	NuGet
+#	PackageManagement,PowerShellGet
 #=================================================
-$PackageProvider = Get-PackageProvider
-if (-not ($PackageProvider | Where-Object {$_.Name -eq 'NuGet'}))
-{
-    Write-Host -ForegroundColor Cyan 'Install PackageProvider NuGet'
-    Install-PackageProvider -Name NuGet -Force
+if (Get-Module -Name PowerShellGet -ListAvailable | Where-Object {$_.Version -ge '2.2.5'}) {
+    Write-Host -ForegroundColor Cyan 'PowerShellGet 2.2.5 or greater is installed'
+}
+else {
+    Write-Host -ForegroundColor Cyan 'Install-Package PackageManagement,PowerShellGet'
+    Install-Package -Name PowerShellGet -MinimumVersion 2.2.5 -Force -Confirm:$false -Source PSGallery
+
+    Write-Host -ForegroundColor Cyan 'Import-Module PackageManagement,PowerShellGet'
+    Import-Module PackageManagement,PowerShellGet -Force
 }
 #=================================================
-#	Trust PSGallery
+#	Set-PSRepository PSGallery
 #=================================================
 $PSRepository = Get-PSRepository -Name PSGallery
 if ($PSRepository)
 {
     if ($PSRepository.InstallationPolicy -ne 'Trusted')
     {
-        Write-Host -ForegroundColor Cyan 'Trust PSGallery'
+        Write-Host -ForegroundColor Cyan 'Set-PSRepository PSGallery Trusted'
         Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
     }
 }
 #=================================================
-#	PowerShellGet
+#	WindowsAutopilotIntune
 #=================================================
-if ((Get-Module PowerShellGet).version -lt [System.Version]'2.2.5.0')
+$Requirement = Import-Module WindowsAutopilotIntune -PassThru -ErrorAction Ignore
+if (-not $Requirement)
 {
-    Write-Host -ForegroundColor Cyan 'Install PowerShell Module PowerShellGet'
-    Install-Module PowerShellGet -Force
+    Write-Host -ForegroundColor Cyan 'Install-Module AzureAD,Microsoft.Graph.Intune,WindowsAutopilotIntune'
+    Install-Module WindowsAutopilotIntune -Force
 }
 #=================================================
-#	PackageManagement
+#	AzureAD
 #=================================================
-if ((Get-Module PackageManagement).version -lt [System.Version]'1.4.7.0')
+$Requirement = Import-Module AzureAD -PassThru -ErrorAction Ignore
+if (-not $Requirement)
 {
-    Write-Host -ForegroundColor Cyan 'Install PowerShell Module PackageManagement'
-    Install-Module PackageManagement -Force
+    Write-Host -ForegroundColor Cyan 'Install-Module AzureAD'
+    Install-Module AzureAD -Force -Verbose
 }
 #=================================================
 #	Get-WindowsAutoPilotInfo
 #=================================================
-Write-Host -ForegroundColor Cyan 'Install PowerShell Script Get-WindowsAutoPilotInfo'
-Install-Script -Name Get-WindowsAutoPilotInfo -Force
+$Requirement = Get-InstalledScript -Name Get-WindowsAutoPilotInfod -ErrorAction SilentlyContinue
+if (-not $Requirement)
+{
+    Write-Host -ForegroundColor Cyan 'Install-Script Get-WindowsAutoPilotInfo'
+    Install-Script -Name Get-WindowsAutoPilotInfo -Force
+}
 #=================================================
 #	AutopilotOOBE
 #=================================================
-Write-Host -ForegroundColor Cyan 'Install PowerShell Module AutopilotOOBE'
+Write-Host -ForegroundColor Cyan 'Install-Module AutopilotOOBE'
 Install-Module AutopilotOOBE -Force
 #=================================================
 #	Complete
 #=================================================
-Write-Verbose 'Start-AutopilotOOBE is ready to run in a new PowerShell window' -Verbose
-Start-Sleep -Seconds 5
-Start-Process PowerShell.exe
+Write-Host -ForegroundColor Cyan 'Complete!'
+Write-Verbose 'Starting a new PowerShell process for Start-AutopilotOOBE' -Verbose
+Start-Sleep -Seconds 3
+Start-Process PowerShell.exe -ArgumentList '-NoLogo'
