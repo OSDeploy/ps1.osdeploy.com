@@ -2,7 +2,7 @@
 'autopilot.ps1.osdeploy.com'
 
 'Requirements:'
-'Windows 10 1809+'
+'Windows 10 1809+ - Windows 11'
 
 'Environment:'
 'OOBE (Out-of-Box Experience)'
@@ -38,25 +38,27 @@ if ((Get-ExecutionPolicy) -ne 'RemoteSigned')
     Set-ExecutionPolicy RemoteSigned -Force
 }
 #=================================================
-#	PowerShellGet
+#	PowerShellGet,PackageManagement
 #=================================================
 if (Get-Module -Name PowerShellGet -ListAvailable | Where-Object {$_.Version -ge '2.2.5'}) {
     Write-Host -ForegroundColor Cyan 'PowerShellGet 2.2.5 or greater is installed'
 }
 else {
-    Write-Host -ForegroundColor Cyan 'Install-Package PowerShellGet'
+    Write-Host -ForegroundColor Cyan 'Install-Package PowerShellGet,PackageManagement'
     Install-Package -Name PowerShellGet -MinimumVersion 2.2.5 -Force -Confirm:$false -Source PSGallery
+
+    Write-Host -ForegroundColor Cyan 'Import-Module PowerShellGet,PackageManagement'
     Import-Module PowerShellGet,PackageManagement -Force
 }
 #=================================================
-#	Trust PSGallery
+#	Set-PSRepository PSGallery
 #=================================================
 $PSRepository = Get-PSRepository -Name PSGallery
 if ($PSRepository)
 {
     if ($PSRepository.InstallationPolicy -ne 'Trusted')
     {
-        Write-Host -ForegroundColor Cyan 'Trust PSGallery'
+        Write-Host -ForegroundColor Cyan 'Set-PSRepository PSGallery Trusted'
         Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
     }
 }
@@ -66,8 +68,8 @@ if ($PSRepository)
 $Module = Import-Module WindowsAutopilotIntune -PassThru -ErrorAction Ignore
 if (-not $Module)
 {
-    Write-Host -ForegroundColor Cyan 'Install PowerShell Module WindowsAutopilotIntune'
-    Install-Module WindowsAutopilotIntune -Force
+    Write-Host -ForegroundColor Cyan 'Install-Module WindowsAutopilotIntune'
+    Install-Module WindowsAutopilotIntune -Force -Verbose
 }
 #=================================================
 #	AzureAD
@@ -75,15 +77,15 @@ if (-not $Module)
 $Module = Import-Module AzureAD -PassThru -ErrorAction Ignore
 if (-not $Module)
 {
-    Write-Host -ForegroundColor Cyan 'Install PowerShell Module AzureAD'
-    Install-Module AzureAD -Force
+    Write-Host -ForegroundColor Cyan 'Install-Module AzureAD'
+    Install-Module AzureAD -Force -Verbose
 }
 #=================================================
 #	Get-WindowsAutoPilotInfo
 #=================================================
-Write-Host -ForegroundColor Cyan 'Install PowerShell Script Get-WindowsAutoPilotInfo'
+Write-Host -ForegroundColor Cyan 'Install-Script Get-WindowsAutoPilotInfo'
 
-#Install-Script -Name Get-WindowsAutoPilotInfo -Force
+#Install-Script -Name Get-WindowsAutoPilotInfo -Force -Verbose
 #=================================================
 #	Complete
 #=================================================
