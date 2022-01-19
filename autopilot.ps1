@@ -2,8 +2,7 @@
 .SYNOPSIS
     Autopilot PSCloudScript at autopilot.ps1.osdeploy.com
 .DESCRIPTION
-    A detailed description of the function or script. This keyword can be
-    used only once in each topic.
+    Autopilot PSCloudScript at autopilot.ps1.osdeploy.com
 .NOTES
     Requires Windows 10 1809+ - Windows 11
     In OOBE (Out-of-Box Experience), press Shift + F10 to open a Command Prompt
@@ -79,7 +78,7 @@ $Requirement = Import-Module AzureAD -PassThru -ErrorAction Ignore
 if (-not $Requirement)
 {
     Write-Host -ForegroundColor Cyan 'Install-Module AzureAD'
-    Install-Module AzureAD -Force -Verbose
+    Install-Module AzureAD -Force
 }
 #=================================================
 #	Get-WindowsAutoPilotInfo
