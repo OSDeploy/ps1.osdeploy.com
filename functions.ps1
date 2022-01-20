@@ -1,4 +1,4 @@
-function Set-oobeDisplay {
+function Step-oobeSetDisplay {
     [CmdletBinding()]
     param ()
 
@@ -11,7 +11,7 @@ function Set-oobeDisplay {
         }
     }
 }
-function Set-oobeRegionLanguage {
+function Step-oobeSetRegionLanguage {
     [CmdletBinding()]
     param ()
 
@@ -24,7 +24,7 @@ function Set-oobeRegionLanguage {
         }
     }
 }
-function Set-oobeDateTime {
+function Step-oobeSetDateTime {
     [CmdletBinding()]
     param ()
 
@@ -38,7 +38,7 @@ function Set-oobeDateTime {
         }
     }
 }
-function Set-oobeExecutionPolicy {
+function Step-oobeExecutionPolicy {
     [CmdletBinding()]
     param ()
 
@@ -49,7 +49,7 @@ function Set-oobeExecutionPolicy {
         }
     }
 }
-function Set-oobePackageManagement {
+function Step-oobePackageManagement {
     [CmdletBinding()]
     param ()
 
@@ -66,7 +66,7 @@ function Set-oobePackageManagement {
         }
     }
 }
-function Set-oobeTrustPSGallery {
+function Step-oobeTrustPSGallery {
     [CmdletBinding()]
     param ()
 
@@ -82,7 +82,7 @@ function Set-oobeTrustPSGallery {
         }
     }
 }
-function Install-oobeModuleAutopilot {
+function Step-oobeInstallModuleAutopilot {
     [CmdletBinding()]
     param ()
 
@@ -95,7 +95,7 @@ function Install-oobeModuleAutopilot {
         }
     }
 }
-function Install-oobeModuleAzureAd {
+function Step-oobeInstallModuleAzureAd {
     [CmdletBinding()]
     param ()
 
@@ -108,7 +108,7 @@ function Install-oobeModuleAzureAd {
         }
     }
 }
-function Install-oobeScriptAutopilot {
+function Step-oobeInstallScriptAutopilot {
     [CmdletBinding()]
     param ()
 
@@ -121,7 +121,7 @@ function Install-oobeScriptAutopilot {
         }
     }
 }
-function Register-oobeAutopilotDevice {
+function Step-oobeRegisterAutopilot {
     [CmdletBinding()]
     param (
         [System.String[]]
@@ -135,13 +135,12 @@ function Register-oobeAutopilotDevice {
         Return $AutopilotProcess
     }
 }
-function Remove-oobeAppxPackage {
+function Step-oobeRemoveAppxPackage {
     [CmdletBinding()]
     param (
         [System.String[]]
         $Name
     )
-
     if ($env:UserName -eq 'defaultuser0') {
         Write-Host -ForegroundColor Cyan 'Removing Appx Packages'
         foreach ($Item in $Name) {
@@ -173,25 +172,26 @@ function Remove-oobeAppxPackage {
         }
     }
 }
-function Add-oobeCapability {
+function Step-oobeAddCapability {
     [CmdletBinding()]
     param (
         [System.String[]]
         $Name
     )
-
     if ($env:UserName -eq 'defaultuser0') {
-        $Requirement = Get-WindowsCapability -Online -Name "*$Name*" -ErrorAction SilentlyContinue | Where-Object {$_.State -ne 'Installed'}
-        if ($Requirement) {
-            Write-Host -ForegroundColor Cyan "Add-WindowsCapability"
-            foreach ($Item in $Requirement) {
-                Write-Host -ForegroundColor DarkGray $Item.DisplayName
-                $Item | Add-WindowsCapability -Online | Out-Null
+        foreach ($Item in $Name) {
+            $WindowsCapability = Get-WindowsCapability -Online -Name "*$Item*" -ErrorAction SilentlyContinue | Where-Object {$_.State -ne 'Installed'}
+            if ($WindowsCapability) {
+                Write-Host -ForegroundColor Cyan "Add-WindowsCapability"
+                foreach ($Capability in $WindowsCapability) {
+                    Write-Host -ForegroundColor DarkGray $Capability.DisplayName
+                    $Capability | Add-WindowsCapability -Online | Out-Null
+                }
             }
         }
     }
 }
-function Add-oobeCapabilityNetFX {
+function Step-oobeAddCapabilityNetFX {
     [CmdletBinding()]
     param ()
 
@@ -203,7 +203,7 @@ function Add-oobeCapabilityNetFX {
         }
     }
 }
-function Update-oobeDrivers {
+function Step-oobeUpdateDrivers {
     [CmdletBinding()]
     param ()
 
@@ -223,7 +223,7 @@ function Update-oobeDrivers {
         }
     }
 }
-function Update-oobeWindows {
+function Step-oobeUpdateWindows {
     [CmdletBinding()]
     param ()
 
@@ -246,5 +246,17 @@ function Update-oobeWindows {
             #Write-Host -ForegroundColor DarkCyan 'Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot'
             Start-Process -WindowStyle Minimized PowerShell.exe -ArgumentList "-Command Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot -NotTitle 'Preview' -NotKBArticleID 'KB890830','KB5005463','KB4481252'" -Wait
         }
+    }
+}
+function Restart-oobeComputer {
+    [CmdletBinding()]
+    param ()
+
+    if ($env:UserName -eq 'defaultuser0') {
+        Write-Host -ForegroundColor Cyan 'Build Complete!'
+        Write-Warning 'Device will restart in 30 seconds.  Press Ctrl + C to cancel'
+        Stop-Transcript
+        Start-Sleep -Seconds 30
+        Restart-Computer
     }
 }
