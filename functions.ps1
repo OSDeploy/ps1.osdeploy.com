@@ -118,7 +118,7 @@ function Step-oobeRegisterAutopilot {
         [System.String[]]
         $Command
     )
-    if ($env:UserName -eq 'defaultuser0') {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeRegisterAutopilot -eq $true)) {
         Write-Host -ForegroundColor Cyan 'Registering Device in Autopilot in new PowerShell window ' -NoNewline
         $AutopilotProcess = Start-Process PowerShell.exe -ArgumentList "-Command $AutopilotCommand" -PassThru
         Write-Host -ForegroundColor Green "(Process Id $($AutopilotProcess.Id))"
@@ -131,7 +131,7 @@ function Step-oobeRemoveAppxPackage {
         [System.String[]]
         $Name
     )
-    if ($env:UserName -eq 'defaultuser0') {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeRemoveAppxPackage -eq $true)) {
         Write-Host -ForegroundColor Cyan 'Removing Appx Packages'
         foreach ($Item in $Name) {
             if (Get-Command Get-AppxProvisionedPackage) {
@@ -168,7 +168,7 @@ function Step-oobeAddCapability {
         [System.String[]]
         $Name
     )
-    if ($env:UserName -eq 'defaultuser0') {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeAddCapability -eq $true)) {
         foreach ($Item in $Name) {
             $WindowsCapability = Get-WindowsCapability -Online -Name "*$Item*" -ErrorAction SilentlyContinue | Where-Object {$_.State -ne 'Installed'}
             if ($WindowsCapability) {
@@ -181,21 +181,10 @@ function Step-oobeAddCapability {
         }
     }
 }
-function Step-oobeAddCapabilityNetFX {
-    [CmdletBinding()]
-    param ()
-    if ($env:UserName -eq 'defaultuser0') {
-        $Requirement = Get-WindowsCapability -Online -Name *NetFX3* -ErrorAction SilentlyContinue | Where-Object {$_.State -ne 'Installed'}
-        if ($Requirement) {
-            Write-Host -ForegroundColor Cyan 'Add-WindowsCapability NetFX3'
-            $Requirement | Add-WindowsCapability -Online | Out-Null
-        }
-    }
-}
 function Step-oobeUpdateDrivers {
     [CmdletBinding()]
     param ()
-    if ($env:UserName -eq 'defaultuser0') {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeUpdateDrivers -eq $true)) {
         Write-Host -ForegroundColor Cyan 'Updating Windows Drivers in minimized window'
         if (!(Get-Module PSWindowsUpdate -ListAvailable -ErrorAction Ignore)) {
             try {
@@ -214,7 +203,7 @@ function Step-oobeUpdateDrivers {
 function Step-oobeUpdateWindows {
     [CmdletBinding()]
     param ()
-    if ($env:UserName -eq 'defaultuser0') {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeUpdateWindows -eq $true)) {
         Write-Host -ForegroundColor Cyan 'Updating Windows in minimized window'
         if (!(Get-Module PSWindowsUpdate -ListAvailable)) {
             try {
@@ -238,7 +227,7 @@ function Step-oobeUpdateWindows {
 function Step-oobeRestartComputer {
     [CmdletBinding()]
     param ()
-    if ($env:UserName -eq 'defaultuser0') {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeRestartComputer -eq $true)) {
         Write-Host -ForegroundColor Cyan 'Build Complete!'
         Write-Warning 'Device will restart in 30 seconds.  Press Ctrl + C to cancel'
         Stop-Transcript
@@ -249,7 +238,7 @@ function Step-oobeRestartComputer {
 function Step-oobeStopComputer {
     [CmdletBinding()]
     param ()
-    if ($env:UserName -eq 'defaultuser0') {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeStopComputer -eq $true)) {
         Write-Host -ForegroundColor Cyan 'Build Complete!'
         Write-Warning 'Device will shutdown in 30 seconds.  Press Ctrl + C to cancel'
         Stop-Transcript
