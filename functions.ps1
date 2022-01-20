@@ -1,8 +1,7 @@
 function Step-oobeSetDisplay {
     [CmdletBinding()]
     param ()
-
-    if ($env:UserName -eq 'defaultuser0') {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeSetDisplay -eq $true)) {
         Write-Host -ForegroundColor Yellow 'Verify the Display Resolution and Scale is set properly'
         Start-Process 'ms-settings:display' | Out-Null
         $ProcessId = (Get-Process -Name 'SystemSettings').Id
@@ -14,8 +13,7 @@ function Step-oobeSetDisplay {
 function Step-oobeSetRegionLanguage {
     [CmdletBinding()]
     param ()
-
-    if ($env:UserName -eq 'defaultuser0') {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeSetRegionLanguage -eq $true)) {
         Write-Host -ForegroundColor Yellow 'Verify the Language, Region, and Keyboard are set properly'
         Start-Process 'ms-settings:regionlanguage' | Out-Null
         $ProcessId = (Get-Process -Name 'SystemSettings').Id
@@ -27,8 +25,7 @@ function Step-oobeSetRegionLanguage {
 function Step-oobeSetDateTime {
     [CmdletBinding()]
     param ()
-
-    if ($env:UserName -eq 'defaultuser0') {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeSetDateTime -eq $true)) {
         Write-Host -ForegroundColor Yellow 'Verify the Date and Time is set properly including the Time Zone'
         Write-Host -ForegroundColor Yellow 'If this is not configured properly, Certificates and Domain Join may fail'
         Start-Process 'ms-settings:dateandtime' | Out-Null
@@ -41,7 +38,6 @@ function Step-oobeSetDateTime {
 function Step-oobeExecutionPolicy {
     [CmdletBinding()]
     param ()
-
     if ($env:UserName -eq 'defaultuser0') {
         if ((Get-ExecutionPolicy) -ne 'RemoteSigned') {
             Write-Host -ForegroundColor Cyan 'Set-ExecutionPolicy RemoteSigned'
@@ -52,7 +48,6 @@ function Step-oobeExecutionPolicy {
 function Step-oobePackageManagement {
     [CmdletBinding()]
     param ()
-
     if ($env:UserName -eq 'defaultuser0') {
         if (Get-Module -Name PowerShellGet -ListAvailable | Where-Object {$_.Version -ge '2.2.5'}) {
             Write-Host -ForegroundColor Cyan 'PowerShellGet 2.2.5 or greater is installed'
@@ -69,7 +64,6 @@ function Step-oobePackageManagement {
 function Step-oobeTrustPSGallery {
     [CmdletBinding()]
     param ()
-
     if ($env:UserName -eq 'defaultuser0') {
         $PSRepository = Get-PSRepository -Name PSGallery
         if ($PSRepository)
@@ -85,7 +79,6 @@ function Step-oobeTrustPSGallery {
 function Step-oobeInstallModuleAutopilot {
     [CmdletBinding()]
     param ()
-
     if ($env:UserName -eq 'defaultuser0') {
         $Requirement = Import-Module WindowsAutopilotIntune -PassThru -ErrorAction Ignore
         if (-not $Requirement)
@@ -98,7 +91,6 @@ function Step-oobeInstallModuleAutopilot {
 function Step-oobeInstallModuleAzureAd {
     [CmdletBinding()]
     param ()
-
     if ($env:UserName -eq 'defaultuser0') {
         $Requirement = Import-Module AzureAD -PassThru -ErrorAction Ignore
         if (-not $Requirement)
@@ -111,7 +103,6 @@ function Step-oobeInstallModuleAzureAd {
 function Step-oobeInstallScriptAutopilot {
     [CmdletBinding()]
     param ()
-
     if ($env:UserName -eq 'defaultuser0') {
         $Requirement = Get-InstalledScript -Name Get-WindowsAutoPilotInfo -ErrorAction SilentlyContinue
         if (-not $Requirement)
@@ -127,7 +118,6 @@ function Step-oobeRegisterAutopilot {
         [System.String[]]
         $Command
     )
-
     if ($env:UserName -eq 'defaultuser0') {
         Write-Host -ForegroundColor Cyan 'Registering Device in Autopilot in new PowerShell window ' -NoNewline
         $AutopilotProcess = Start-Process PowerShell.exe -ArgumentList "-Command $AutopilotCommand" -PassThru
@@ -194,7 +184,6 @@ function Step-oobeAddCapability {
 function Step-oobeAddCapabilityNetFX {
     [CmdletBinding()]
     param ()
-
     if ($env:UserName -eq 'defaultuser0') {
         $Requirement = Get-WindowsCapability -Online -Name *NetFX3* -ErrorAction SilentlyContinue | Where-Object {$_.State -ne 'Installed'}
         if ($Requirement) {
@@ -206,7 +195,6 @@ function Step-oobeAddCapabilityNetFX {
 function Step-oobeUpdateDrivers {
     [CmdletBinding()]
     param ()
-
     if ($env:UserName -eq 'defaultuser0') {
         Write-Host -ForegroundColor Cyan 'Updating Windows Drivers in minimized window'
         if (!(Get-Module PSWindowsUpdate -ListAvailable -ErrorAction Ignore)) {
@@ -226,7 +214,6 @@ function Step-oobeUpdateDrivers {
 function Step-oobeUpdateWindows {
     [CmdletBinding()]
     param ()
-
     if ($env:UserName -eq 'defaultuser0') {
         Write-Host -ForegroundColor Cyan 'Updating Windows in minimized window'
         if (!(Get-Module PSWindowsUpdate -ListAvailable)) {
@@ -248,15 +235,33 @@ function Step-oobeUpdateWindows {
         }
     }
 }
-function Restart-oobeComputer {
+function Step-oobeComplete {
     [CmdletBinding()]
     param ()
-
+    if ($env:UserName -eq 'defaultuser0') {
+        Write-Host -ForegroundColor Cyan 'Build Complete!'
+        Stop-Transcript
+    }
+}
+function Step-oobeRestartComputer {
+    [CmdletBinding()]
+    param ()
     if ($env:UserName -eq 'defaultuser0') {
         Write-Host -ForegroundColor Cyan 'Build Complete!'
         Write-Warning 'Device will restart in 30 seconds.  Press Ctrl + C to cancel'
         Stop-Transcript
         Start-Sleep -Seconds 30
         Restart-Computer
+    }
+}
+function Step-oobeStopComputer {
+    [CmdletBinding()]
+    param ()
+    if ($env:UserName -eq 'defaultuser0') {
+        Write-Host -ForegroundColor Cyan 'Build Complete!'
+        Write-Warning 'Device will shutdown in 30 seconds.  Press Ctrl + C to cancel'
+        Stop-Transcript
+        Start-Sleep -Seconds 30
+        Stop-Computer
     }
 }
