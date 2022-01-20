@@ -1,7 +1,7 @@
 function Step-oobeSetDisplay {
     [CmdletBinding()]
     param ()
-    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeSetDisplay -eq $true)) {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:oobeCloud.oobeSetDisplay -eq $true)) {
         Write-Host -ForegroundColor Yellow 'Verify the Display Resolution and Scale is set properly'
         Start-Process 'ms-settings:display' | Out-Null
         $ProcessId = (Get-Process -Name 'SystemSettings').Id
@@ -13,7 +13,7 @@ function Step-oobeSetDisplay {
 function Step-oobeSetRegionLanguage {
     [CmdletBinding()]
     param ()
-    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeSetRegionLanguage -eq $true)) {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:oobeCloud.oobeSetRegionLanguage -eq $true)) {
         Write-Host -ForegroundColor Yellow 'Verify the Language, Region, and Keyboard are set properly'
         Start-Process 'ms-settings:regionlanguage' | Out-Null
         $ProcessId = (Get-Process -Name 'SystemSettings').Id
@@ -25,7 +25,7 @@ function Step-oobeSetRegionLanguage {
 function Step-oobeSetDateTime {
     [CmdletBinding()]
     param ()
-    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeSetDateTime -eq $true)) {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:oobeCloud.oobeSetDateTime -eq $true)) {
         Write-Host -ForegroundColor Yellow 'Verify the Date and Time is set properly including the Time Zone'
         Write-Host -ForegroundColor Yellow 'If this is not configured properly, Certificates and Domain Join may fail'
         Start-Process 'ms-settings:dateandtime' | Out-Null
@@ -118,10 +118,9 @@ function Step-oobeRegisterAutopilot {
         [System.String]
         $Command
     )
-    pause
-    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeRegisterAutopilot -eq $true)) {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:oobeCloud.oobeRegisterAutopilot -eq $true)) {
         Write-Host -ForegroundColor Cyan 'Registering Device in Autopilot in new PowerShell window ' -NoNewline
-        pause
+        Write-Verbose $Command -Verbose
         $AutopilotProcess = Start-Process PowerShell.exe -ArgumentList "-Command $Command" -PassThru
         pause
         Write-Host -ForegroundColor Green "(Process Id $($AutopilotProcess.Id))"
@@ -136,7 +135,7 @@ function Step-oobeRemoveAppxPackage {
         [System.String[]]
         $Name
     )
-    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeRemoveAppxPackage -eq $true)) {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:oobeCloud.oobeRemoveAppxPackage -eq $true)) {
         Write-Host -ForegroundColor Cyan 'Removing Appx Packages'
         foreach ($Item in $Name) {
             if (Get-Command Get-AppxProvisionedPackage) {
@@ -173,7 +172,7 @@ function Step-oobeAddCapability {
         [System.String[]]
         $Name
     )
-    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeAddCapability -eq $true)) {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:oobeCloud.oobeAddCapability -eq $true)) {
         if ($Name) {Write-Host -ForegroundColor Cyan "Add-WindowsCapability"}
         foreach ($Item in $Name) {
             $WindowsCapability = Get-WindowsCapability -Online -Name "*$Item*" -ErrorAction SilentlyContinue | Where-Object {$_.State -ne 'Installed'}
@@ -189,7 +188,7 @@ function Step-oobeAddCapability {
 function Step-oobeUpdateDrivers {
     [CmdletBinding()]
     param ()
-    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeUpdateDrivers -eq $true)) {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:oobeCloud.oobeUpdateDrivers -eq $true)) {
         Write-Host -ForegroundColor Cyan 'Updating Windows Drivers in minimized window'
         if (!(Get-Module PSWindowsUpdate -ListAvailable -ErrorAction Ignore)) {
             try {
@@ -208,7 +207,7 @@ function Step-oobeUpdateDrivers {
 function Step-oobeUpdateWindows {
     [CmdletBinding()]
     param ()
-    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeUpdateWindows -eq $true)) {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:oobeCloud.oobeUpdateWindows -eq $true)) {
         Write-Host -ForegroundColor Cyan 'Updating Windows in minimized window'
         if (!(Get-Module PSWindowsUpdate -ListAvailable)) {
             try {
@@ -232,7 +231,7 @@ function Step-oobeUpdateWindows {
 function Step-oobeRestartComputer {
     [CmdletBinding()]
     param ()
-    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeRestartComputer -eq $true)) {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:oobeCloud.oobeRestartComputer -eq $true)) {
         Write-Host -ForegroundColor Cyan 'Build Complete!'
         Write-Warning 'Device will restart in 30 seconds.  Press Ctrl + C to cancel'
         Stop-Transcript
@@ -243,7 +242,7 @@ function Step-oobeRestartComputer {
 function Step-oobeStopComputer {
     [CmdletBinding()]
     param ()
-    if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeStopComputer -eq $true)) {
+    if (($env:UserName -eq 'defaultuser0') -and ($Global:oobeCloud.oobeStopComputer -eq $true)) {
         Write-Host -ForegroundColor Cyan 'Build Complete!'
         Write-Warning 'Device will shutdown in 30 seconds.  Press Ctrl + C to cancel'
         Stop-Transcript
