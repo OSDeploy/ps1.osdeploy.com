@@ -120,12 +120,8 @@ function Step-oobeRegisterAutopilot {
     )
     if (($env:UserName -eq 'defaultuser0') -and ($Global:oobeCloud.oobeRegisterAutopilot -eq $true)) {
         Write-Host -ForegroundColor Cyan 'Registering Device in Autopilot in new PowerShell window ' -NoNewline
-        Write-Verbose $Command -Verbose
         $AutopilotProcess = Start-Process PowerShell.exe -ArgumentList "-Command $Command" -PassThru
-        pause
         Write-Host -ForegroundColor Green "(Process Id $($AutopilotProcess.Id))"
-        $AutopilotProcess
-        pause
         Return $AutopilotProcess
     }
 }
