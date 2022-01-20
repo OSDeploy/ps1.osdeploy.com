@@ -169,10 +169,10 @@ function Step-oobeAddCapability {
         $Name
     )
     if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeAddCapability -eq $true)) {
+        if ($Name) {Write-Host -ForegroundColor Cyan "Add-WindowsCapability"}
         foreach ($Item in $Name) {
             $WindowsCapability = Get-WindowsCapability -Online -Name "*$Item*" -ErrorAction SilentlyContinue | Where-Object {$_.State -ne 'Installed'}
             if ($WindowsCapability) {
-                Write-Host -ForegroundColor Cyan "Add-WindowsCapability"
                 foreach ($Capability in $WindowsCapability) {
                     Write-Host -ForegroundColor DarkGray $Capability.DisplayName
                     $Capability | Add-WindowsCapability -Online | Out-Null
