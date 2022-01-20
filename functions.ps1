@@ -115,7 +115,7 @@ function Step-oobeInstallScriptAutopilot {
 function Step-oobeRegisterAutopilot {
     [CmdletBinding()]
     param (
-        [System.String[]]
+        [System.String]
         $Command
     )
     pause
