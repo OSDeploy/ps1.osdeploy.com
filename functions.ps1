@@ -118,10 +118,15 @@ function Step-oobeRegisterAutopilot {
         [System.String[]]
         $Command
     )
+    pause
     if (($env:UserName -eq 'defaultuser0') -and ($Global:iexCloud.oobeRegisterAutopilot -eq $true)) {
         Write-Host -ForegroundColor Cyan 'Registering Device in Autopilot in new PowerShell window ' -NoNewline
+        pause
         $AutopilotProcess = Start-Process PowerShell.exe -ArgumentList "-Command $AutopilotCommand" -PassThru
+        pause
         Write-Host -ForegroundColor Green "(Process Id $($AutopilotProcess.Id))"
+        $AutopilotProcess
+        pause
         Return $AutopilotProcess
     }
 }
