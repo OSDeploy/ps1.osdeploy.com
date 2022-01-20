@@ -95,6 +95,19 @@ function Install-oobeModuleAutopilot {
         }
     }
 }
+function Install-oobeModuleAzureAd {
+    [CmdletBinding()]
+    param ()
+
+    if ($env:UserName -eq 'defaultuser0') {
+        $Requirement = Import-Module AzureAD -PassThru -ErrorAction Ignore
+        if (-not $Requirement)
+        {
+            Write-Host -ForegroundColor Cyan 'Install-Module AzureAD'
+            Install-Module AzureAD -Force
+        }
+    }
+}
 function Install-oobeScriptAutopilot {
     [CmdletBinding()]
     param ()
@@ -108,18 +121,18 @@ function Install-oobeScriptAutopilot {
         }
     }
 }
-
-function Install-oobeModuleAzureAd {
+function Register-oobeAutopilotDevice {
     [CmdletBinding()]
-    param ()
+    param (
+        [System.String[]]
+        $Command
+    )
 
     if ($env:UserName -eq 'defaultuser0') {
-        $Requirement = Import-Module AzureAD -PassThru -ErrorAction Ignore
-        if (-not $Requirement)
-        {
-            Write-Host -ForegroundColor Cyan 'Install-Module AzureAD'
-            Install-Module AzureAD -Force
-        }
+        Write-Host -ForegroundColor Cyan 'Registering Device in Autopilot in new PowerShell window ' -NoNewline
+        $AutopilotProcess = Start-Process PowerShell.exe -ArgumentList "-Command $AutopilotCommand" -PassThru
+        Write-Host -ForegroundColor Green "(Process Id $($AutopilotProcess.Id))"
+        Return $AutopilotProcess
     }
 }
 function Remove-oobeAppxPackage {
@@ -214,7 +227,7 @@ function Update-oobeDrivers {
     }
 }
 
-function Update-oobeWindowsUpdate {
+function Update-oobeWindows {
     [CmdletBinding()]
     param ()
 
