@@ -235,14 +235,6 @@ function Step-oobeUpdateWindows {
         }
     }
 }
-function Step-oobeComplete {
-    [CmdletBinding()]
-    param ()
-    if ($env:UserName -eq 'defaultuser0') {
-        Write-Host -ForegroundColor Cyan 'Build Complete!'
-        Stop-Transcript
-    }
-}
 function Step-oobeRestartComputer {
     [CmdletBinding()]
     param ()
