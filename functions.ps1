@@ -173,7 +173,6 @@ function Remove-oobeAppxPackage {
         }
     }
 }
-
 function Add-oobeCapability {
     [CmdletBinding()]
     param (
@@ -184,15 +183,14 @@ function Add-oobeCapability {
     if ($env:UserName -eq 'defaultuser0') {
         $Requirement = Get-WindowsCapability -Online -Name "*$Name*" -ErrorAction SilentlyContinue | Where-Object {$_.State -ne 'Installed'}
         if ($Requirement) {
-            Write-Host -ForegroundColor Cyan 'Add-WindowsCapability Rsat'
+            Write-Host -ForegroundColor Cyan "Add-WindowsCapability"
             foreach ($Item in $Requirement) {
-                Write-Host -ForegroundColor Cyan $Item.DisplayName
+                Write-Host -ForegroundColor DarkGray $Item.DisplayName
                 $Item | Add-WindowsCapability -Online | Out-Null
             }
         }
     }
 }
-
 function Add-oobeCapabilityNetFX {
     [CmdletBinding()]
     param ()
@@ -205,7 +203,6 @@ function Add-oobeCapabilityNetFX {
         }
     }
 }
-
 function Update-oobeDrivers {
     [CmdletBinding()]
     param ()
@@ -226,7 +223,6 @@ function Update-oobeDrivers {
         }
     }
 }
-
 function Update-oobeWindows {
     [CmdletBinding()]
     param ()
